@@ -1187,10 +1187,15 @@ glance inspectStats A.hdf
         problems = 0
         for fn in args:
             try :
-                lal = list(io.open(fn)())
+                input = io.open(fn)
+                lal = list(input())
                 lal.sort()
                 if options.parsable_output:
-                    print "".join(map(lambda x: fn+"\t"+x+"\n", lal))
+                    def format_parsable(file, input, var):
+                        try: shape = str(input[var].shape)
+                        except ValueError: shape = ""
+                        return file+"\t"+var+"\t"+shape+"\n"
+                    print "".join(map(lambda x: format_parsable(fn, input, x), lal))
                 else:
                     print fn + ': ' + ('\n  ' + ' '*len(fn)).join(lal)
             except KeyError :
