@@ -1202,6 +1202,11 @@ def info_impl(options, *args):
 
     fields = options.fields.split(',')
 
+    # For backward compatibility, non-parsable output should always start with
+    # the filename. Variables after the first will be indented.
+    if not options.parsable_output and fields[0] != "filename":
+        fields = ["filename"]+fields
+
     for fn in args:
         try :
             input = io.open(fn)
@@ -1215,7 +1220,18 @@ def info_impl(options, *args):
                     return str_out
                 print "".join(map(lambda x: format_parsable(fn, input, x), lal))
             else:
-                print fn + ': ' + ('\n  ' + ' '*len(fn)).join(lal)
+                def format_original(file, input, var, fields):
+                    out_fields = return_info_fields(file, input, var, fields)
+                    str_out_fields = [ str(x) if x is not None else "" for x in out_fields ]
+                    str_out = " ".join(str_out_fields)
+                    return str_out
+                if len(lal) == 0:
+                    print fn+": "
+                else:
+                    print fn+": "+format_original(fn, input, lal[0], fields[1:])
+                    if len(lal) > 1:
+                        for var in lal[1:]:
+                            print "  "+" "*len(fn)+format_original(fn, input, var, fields[1:])
         except KeyError :
             LOG.warn('Unable to open / process file selection: ' + fn)
             problems += 1
