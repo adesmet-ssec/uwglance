@@ -468,7 +468,8 @@ def set_up_command_line_options (parser) :
     parser.add_option('-c', '--configfile', dest=OPTIONS_CONFIG_FILE_KEY, type='string', default=None,
                       help="set optional configuration file")
     parser.add_option('--fields', type='string',
-                      help='comma separted list of additional fields to add to info --parsable output')
+                      default='filename,variable',
+                      help="comma separted list of additional fields to add to info's output")
     
     # should pass/fail be tested?
     parser.add_option('-x', '--doPassFail', dest=DO_TEST_PASSFAIL_KEY,

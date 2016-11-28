@@ -1200,10 +1200,7 @@ def return_info_fields(file, input, var, fields):
 def info_impl(options, *args):
     problems = 0
 
-    fields = []
-    if options.fields is not None:
-        fields = options.fields.split(',')
-    fields = ["filename", "variable", "shape"] + fields
+    fields = options.fields.split(',')
 
     for fn in args:
         try :
