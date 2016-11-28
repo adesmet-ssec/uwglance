@@ -1136,7 +1136,7 @@ def inspect_stats_library_call (afn, var_list=[ ], options_set={ }, do_document=
 
 def gather_stats_for_variable(filehandle, variable):
     missing_val = filehandle.missing_value(variable)
-    stats = statistics.StatisticalInspectionAnalysis.withSimpleData(filehandle[variable])
+    stats = statistics.StatisticalInspectionAnalysis.withSimpleData(filehandle[variable], missing_val)
     results = {}
     for title, data in stats.dictionary_form().items():
         results.update(data)
