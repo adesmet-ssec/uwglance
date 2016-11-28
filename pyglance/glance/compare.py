@@ -1134,6 +1134,15 @@ def inspect_stats_library_call (afn, var_list=[ ], options_set={ }, do_document=
     if doc_atend:
         print >> output_channel, ('\n\n' + statistics.INSP_STATISTICS_DOC_STR)
 
+def gather_stats_for_variable(filehandle, variable):
+    missing_val = filehandle.missing_value(variable)
+    stats = statistics.StatisticalInspectionAnalysis.withSimpleData(filehandle[variable])
+    results = {}
+    for title, data in stats.dictionary_form().items():
+        results.update(data)
+    return results
+
+
 def return_info_fields(file, input, var, fields):
     """ Return a list of the requested fields from input[var]
     
@@ -1141,24 +1150,48 @@ def return_info_fields(file, input, var, fields):
         "filename" - value of file
         "variable" - value of var
         "shape" - shape of the variable
+        ATTRIBUTE_NAME - Value of this attribute for this variable
+        "stats("+NAME+")" - The calculated statistic NAME. Uses same names
+            as visible from "glance inspectstats". Only the names are used,
+            not the category names.
 
         Elements in the returned list can be safely passed through str()
         to get a suitable, human-friendly form. No other promises are made.
         Elements may be None if the value is not available.
     """
     result = []
+    stats = None
+    stats_failed = False
     for f in fields:
         if f == "filename":
             result.append(file)
+
         elif f == "variable":
             result.append(var)
+
         elif f == "shape":
             try:
                 result.append(str(input[var].shape))
             except ValueError:
                 result.append(None)
+
+        elif f.find("stats(") != -1 and f[-1] == ")":
+            statname = f[6:-1]
+            try:
+                if stats is None and stats_failed == False:
+                    stats = gather_stats_for_variable(input, var)
+            except ValueError:
+                LOG.warn('Skipping variable "'+var+'" in "'+file+"' as unparsable.")
+                stats_failed = True
+                result.append(None)
+            if stats is not None and statname in stats:
+                result.append(stats[statname])
+            else:
+                result.append(None)
+            
         elif f in input.get_variable_attributes(var):
             result.append(input.get_attribute(var, f))
+
         else:
             result.append(None)
     return result
