@@ -1157,8 +1157,10 @@ def return_info_fields(file, input, var, fields):
                 result.append(str(input[var].shape))
             except ValueError:
                 result.append(None)
+        elif f in input.get_variable_attributes(var):
+            result.append(input.get_attribute(var, f))
         else:
-            raise Exception('Unknown field "'+f+'" requested.')
+            result.append(None)
     return result
 
 
@@ -1178,7 +1180,7 @@ def info_impl(options, *args):
             if options.parsable_output:
                 def format_parsable(file, input, var):
                     out_fields = return_info_fields(file, input, var, fields)
-                    str_out_fields = [ str(x) for x in out_fields ]
+                    str_out_fields = [ str(x) if x is not None else "" for x in out_fields ]
                     str_out = "\t".join(str_out_fields)+"\n"
                     return str_out
                 print "".join(map(lambda x: format_parsable(fn, input, x), lal))
