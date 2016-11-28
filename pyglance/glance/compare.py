@@ -1134,6 +1134,29 @@ def inspect_stats_library_call (afn, var_list=[ ], options_set={ }, do_document=
     if doc_atend:
         print >> output_channel, ('\n\n' + statistics.INSP_STATISTICS_DOC_STR)
 
+def info_impl(options, *args):
+    problems = 0
+    for fn in args:
+        try :
+            input = io.open(fn)
+            lal = list(input())
+            lal.sort()
+            if options.parsable_output:
+                def format_parsable(file, input, var):
+                    try: shape = str(input[var].shape)
+                    except ValueError: shape = ""
+                    return file+"\t"+var+"\t"+shape+"\n"
+                print "".join(map(lambda x: format_parsable(fn, input, x), lal))
+            else:
+                print fn + ': ' + ('\n  ' + ' '*len(fn)).join(lal)
+        except KeyError :
+            LOG.warn('Unable to open / process file selection: ' + fn)
+            problems += 1
+    if problems > 255:
+        # exit code is 8-bits, limit ourselves.
+        problems = 255
+    return problems
+
 def main():
     import optparse
     usage = """
@@ -1184,27 +1207,7 @@ glance inspectStats A.hdf
         """list information about a list of files
         List available variables for comparison.
         """
-        problems = 0
-        for fn in args:
-            try :
-                input = io.open(fn)
-                lal = list(input())
-                lal.sort()
-                if options.parsable_output:
-                    def format_parsable(file, input, var):
-                        try: shape = str(input[var].shape)
-                        except ValueError: shape = ""
-                        return file+"\t"+var+"\t"+shape+"\n"
-                    print "".join(map(lambda x: format_parsable(fn, input, x), lal))
-                else:
-                    print fn + ': ' + ('\n  ' + ' '*len(fn)).join(lal)
-            except KeyError :
-                LOG.warn('Unable to open / process file selection: ' + fn)
-                problems += 1
-        if problems > 255:
-            # exit code is 8-bits, limit ourselves.
-            problems = 255
-        return problems
+        return info_impl(options, *args)
     
     def stats(*args):
         """create statistics summary of variables
