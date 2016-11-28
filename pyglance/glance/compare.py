@@ -1134,8 +1134,42 @@ def inspect_stats_library_call (afn, var_list=[ ], options_set={ }, do_document=
     if doc_atend:
         print >> output_channel, ('\n\n' + statistics.INSP_STATISTICS_DOC_STR)
 
+def return_info_fields(file, input, var, fields):
+    """ Return a list of the requested fields from input[var]
+    
+        fields is itself a list. Values:
+        "filename" - value of file
+        "variable" - value of var
+        "shape" - shape of the variable
+
+        Elements in the returned list can be safely passed through str()
+        to get a suitable, human-friendly form. No other promises are made.
+        Elements may be None if the value is not available.
+    """
+    result = []
+    for f in fields:
+        if f == "filename":
+            result.append(file)
+        elif f == "variable":
+            result.append(var)
+        elif f == "shape":
+            try:
+                result.append(str(input[var].shape))
+            except ValueError:
+                result.append(None)
+        else:
+            raise Exception('Unknown field "'+f+'" requested.')
+    return result
+
+
 def info_impl(options, *args):
     problems = 0
+
+    fields = []
+    if options.fields is not None:
+        fields = options.fields.split(',')
+    fields = ["filename", "variable", "shape"] + fields
+
     for fn in args:
         try :
             input = io.open(fn)
@@ -1143,9 +1177,10 @@ def info_impl(options, *args):
             lal.sort()
             if options.parsable_output:
                 def format_parsable(file, input, var):
-                    try: shape = str(input[var].shape)
-                    except ValueError: shape = ""
-                    return file+"\t"+var+"\t"+shape+"\n"
+                    out_fields = return_info_fields(file, input, var, fields)
+                    str_out_fields = [ str(x) for x in out_fields ]
+                    str_out = "\t".join(str_out_fields)+"\n"
+                    return str_out
                 print "".join(map(lambda x: format_parsable(fn, input, x), lal))
             else:
                 print fn + ': ' + ('\n  ' + ' '*len(fn)).join(lal)
