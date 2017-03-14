@@ -27,6 +27,16 @@ The GUI's most complex responsibility is keeping the user from entering
 garbage data into the UI.
 """
 
+def add_right_aligned_label(layout, text, row, column=0):
+    """
+    Add a label, right-aligned, to a layout that takes a row
+    and column and alignment (QGridLayout).
+    """
+    label = QtGui.QLabel(text)
+    layout.addWidget(label, row, column, QtCore.Qt.AlignRight)
+    return label
+
+
 class _DoubleOrNoneValidator (QtGui.QDoubleValidator) :
     """
     This validator accepts doubles like it's parent class or None.
@@ -169,7 +179,7 @@ class GlanceGUIView (QtGui.QWidget) :
         currentRow = self._add_file_related_controls(B_CONST, layoutToUse, currentRow)
         
         # set up the epsilon input box
-        layoutToUse.addWidget(QtGui.QLabel("epsilon:"), currentRow, 0)
+        add_right_aligned_label(layoutToUse, "epsilon:", currentRow)
         self.epsilonWidget = QtGui.QLineEdit()
         self.epsilonWidget.setToolTip("Maximum acceptible difference between the variable data in the two files. Leave blank or enter None for no comparison.")
         tempValidator = _DoubleOrNoneValidator(self.epsilonWidget)
@@ -182,7 +192,7 @@ class GlanceGUIView (QtGui.QWidget) :
         currentRow += 1
         
         # set up the epsilon percent input box
-        layoutToUse.addWidget(QtGui.QLabel("epsilon percent:"), currentRow, 0)
+        add_right_aligned_label(layoutToUse, "epsilon percent:", currentRow)
         self.epsilonPerWidget = QtGui.QLineEdit()
         self.epsilonPerWidget.setToolTip("Maximum acceptible difference between the variable data in terms of % of each data point in the A file. Leave blank or enter None for no comparison.")
         tempValidator = _DoubleOrNoneValidator(self.epsilonPerWidget)
@@ -195,7 +205,7 @@ class GlanceGUIView (QtGui.QWidget) :
         currentRow += 1
         
         # set up the drop down to allow image type selection
-        layoutToUse.addWidget(QtGui.QLabel("Image Type:"), currentRow, 0)
+        add_right_aligned_label(layoutToUse, "Image Type:", currentRow)
         self.imageSelectionDropDown = QtGui.QComboBox()
         self.imageSelectionDropDown.activated.connect(self.reportImageTypeSelected)
         layoutToUse.addWidget(self.imageSelectionDropDown, currentRow, 1, 1, 2)
@@ -231,7 +241,7 @@ class GlanceGUIView (QtGui.QWidget) :
         self.widgetInfo[file_prefix] = { }
         
         # set up the file loading control
-        grid_layout.addWidget(QtGui.QLabel("File " + file_prefix + ":"), currentRow, 0)
+        add_right_aligned_label(grid_layout, "File "+file_prefix+":", currentRow)
         filePath   = QtGui.QLineEdit()
         filePath.setToolTip("The currently loaded file.")
         filePath.setReadOnly(True) # this is mostly for displaying the file path, the load button selects it
@@ -248,7 +258,7 @@ class GlanceGUIView (QtGui.QWidget) :
         currentRow += 1
         
         # set up the drop down for the variable select
-        grid_layout.addWidget(QtGui.QLabel("variable name:"), currentRow, 1)
+        add_right_aligned_label(grid_layout, "variable name:", currentRow, 1)
         variableSelection = QtGui.QComboBox()
         variableSelection.setDisabled(True)
         variableSelection.activated.connect(partial(self.reportVariableSelected, file_prefix=file_prefix))
@@ -258,9 +268,7 @@ class GlanceGUIView (QtGui.QWidget) :
         currentRow += 1
         
         # set up a label to display the variable dimension information
-        tempShapeLabel = QtGui.QLabel("data shape:")
-        tempShapeLabel.setSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        grid_layout.addWidget(tempShapeLabel, currentRow, 1)
+        add_right_aligned_label(grid_layout, "data shape:", currentRow, 1)
         dimensionsLabel = QtGui.QLabel(" ")
         self.widgetInfo[file_prefix]['dims'] = dimensionsLabel
         grid_layout.addWidget(dimensionsLabel, currentRow, 2, 1, 3)
@@ -290,7 +298,7 @@ class GlanceGUIView (QtGui.QWidget) :
         grid_layout.addWidget(overrideFillButton, currentRow, 1)
         
         # now set up the input of the fill value that will be used
-        grid_layout.addWidget(QtGui.QLabel("fill value:"), currentRow+1, 1)
+        add_right_aligned_label(grid_layout, "fill value:", currentRow+1, 1)
         fillValue = QtGui.QLineEdit()
         fillValue.setToolTip("The fill value that will be used.")
         tempValidator = _DoubleOrNoneValidator(fillValue)
@@ -315,7 +323,7 @@ class GlanceGUIView (QtGui.QWidget) :
         currentRow = 0
         
         # add the drop down for selecting a custom color map
-        layoutToUse.addWidget(QtGui.QLabel("Color map:"), currentRow, 0)
+        add_right_aligned_label(layoutToUse, "Color map:", currentRow)
         self.colormapDropDown = QtGui.QComboBox()
         self.colormapDropDown.activated.connect(self.colormapSelected)
         layoutToUse.addWidget(self.colormapDropDown, currentRow, 1, 1, 2)
@@ -334,7 +342,7 @@ class GlanceGUIView (QtGui.QWidget) :
         currentRow += 1
         
         # add the drop down for selecting the data display form
-        layoutToUse.addWidget(QtGui.QLabel("Data Form:"), currentRow, 0)
+        add_right_aligned_label(layoutToUse, "Data Form:", currentRow)
         self.dataDisplayFormDropDown = QtGui.QComboBox()
         self.dataDisplayFormDropDown.activated.connect(self.reportDataFormSelected)
         layoutToUse.addWidget(self.dataDisplayFormDropDown, currentRow, 1, 1, 2)
@@ -355,7 +363,7 @@ class GlanceGUIView (QtGui.QWidget) :
         # add lon/lat controls
         
         # add box to enter lon/lat epsilon
-        layoutToUse.addWidget(QtGui.QLabel("lon/lat epsilon:"), currentRow, 0)
+        add_right_aligned_label(layoutToUse, "lon/lat epsilon:", currentRow)
         llepsilonWidget = QtGui.QLineEdit()
         self.llepsilonWidget = llepsilonWidget
         llepsilonWidget.setToolTip("Maximum acceptible difference between the longitudes or latitudes in the two files. Leave blank or enter None for no comparison.")
@@ -373,7 +381,7 @@ class GlanceGUIView (QtGui.QWidget) :
         currentRow = self._add_lon_lat_controls(B_CONST, layoutToUse, currentRow)
         
         return layoutToUse
-    
+
     def _build_filters_tab (self) :
         """
         built the basic qt controls for the filters tab and lay them out in a grid layout
@@ -398,10 +406,9 @@ class GlanceGUIView (QtGui.QWidget) :
         """
         
         # label the specific section
-        tempLabel = QtGui.QLabel(str(file_prefix) + " simple filtering:")
+        tempLabel = add_right_aligned_label(grid_layout, str(file_prefix)+" simple filtering:", current_row)
         #tempLabel.setToolTip("Simple filters are applied after any complex filters are resolved.") # TODO need to specify this once there are complex filters
         tempLabel.setToolTip("Simple filters that will be applied to the data before display or analysis.")
-        grid_layout.addWidget(tempLabel, current_row, 0)
         
         current_row += 1
         
@@ -468,14 +475,13 @@ class GlanceGUIView (QtGui.QWidget) :
         """
         
         # add the label so we know which file this is for
-        tempLabel = QtGui.QLabel(file_prefix + " Navigation:")
+        tempLabel = add_right_aligned_label(grid_layout, file_prefix+" Navigation:", current_row)
         tempLabel.setToolTip("Navigation variables will only be used when drawing mapped plots.")
-        grid_layout.addWidget(tempLabel, current_row, 0)
         
         current_row += 1
         
         # add drop down to select latitude
-        grid_layout.addWidget(QtGui.QLabel("Latitude:"), current_row, 1)
+        add_right_aligned_label(grid_layout, "Latitude:", current_row, 1)
         latNameDropDown = QtGui.QComboBox()
         latNameDropDown.activated.connect(partial(self.reportLatitudeSelected, file_prefix=file_prefix))
         self.widgetInfo[file_prefix]["latName"] = latNameDropDown
@@ -484,7 +490,7 @@ class GlanceGUIView (QtGui.QWidget) :
         current_row += 1
         
         # add drop down to select longitude
-        grid_layout.addWidget(QtGui.QLabel("Longitude:"), current_row, 1)
+        add_right_aligned_label(grid_layout, "Longitude:", current_row, 1)
         lonNameDropDown = QtGui.QComboBox()
         lonNameDropDown.activated.connect(partial(self.reportLongitudeSelected, file_prefix=file_prefix))
         self.widgetInfo[file_prefix]["lonName"] = lonNameDropDown
