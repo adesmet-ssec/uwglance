@@ -317,6 +317,9 @@ class GlanceGUIView (QtGui.QWidget) :
         # create the layout and set up some of the overall record keeping
         layoutToUse = QtGui.QGridLayout()
         currentRow = 0
+
+        # Only allow column 2 to stretch.
+        layoutToUse.setColumnStretch(2,1)
         
         # add the drop down for selecting a custom color map
         layoutToUse.addWidget(QtGui.QLabel("Color map:"), currentRow, 0)
