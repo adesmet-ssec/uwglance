@@ -483,7 +483,7 @@ class GlanceGUIView (QtGui.QWidget) :
         latNameDropDown = QtGui.QComboBox()
         latNameDropDown.activated.connect(partial(self.reportLatitudeSelected, file_prefix=file_prefix))
         self.widgetInfo[file_prefix]["latName"] = latNameDropDown
-        grid_layout.addWidget(latNameDropDown, current_row, 2, 1, 2)
+        grid_layout.addWidget(latNameDropDown, current_row, 2)
         
         current_row += 1
         
@@ -492,7 +492,7 @@ class GlanceGUIView (QtGui.QWidget) :
         lonNameDropDown = QtGui.QComboBox()
         lonNameDropDown.activated.connect(partial(self.reportLongitudeSelected, file_prefix=file_prefix))
         self.widgetInfo[file_prefix]["lonName"] = lonNameDropDown
-        grid_layout.addWidget(lonNameDropDown, current_row, 2, 1, 2)
+        grid_layout.addWidget(lonNameDropDown, current_row, 2)
         
         current_row += 1
         
