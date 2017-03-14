@@ -404,6 +404,8 @@ class GlanceGUIView (QtGui.QWidget) :
         # create the layout and set up some of the overall record keeping
         layoutToUse = QtGui.QGridLayout()
         currentRow = 0
+
+        layoutToUse.setColumnMinimumWidth(0,20)
         
         # add the filtering related controls
         currentRow = self._add_simple_filter_controls(A_CONST, layoutToUse, currentRow)
@@ -426,7 +428,7 @@ class GlanceGUIView (QtGui.QWidget) :
         tempLabel = QtGui.QLabel(str(file_prefix) + " simple filtering:")
         #tempLabel.setToolTip("Simple filters are applied after any complex filters are resolved.") # TODO need to specify this once there are complex filters
         tempLabel.setToolTip("Simple filters that will be applied to the data before display or analysis.")
-        grid_layout.addWidget(tempLabel, current_row, 0)
+        grid_layout.addWidget(tempLabel, current_row, 0, 1, 2)
         
         current_row += 1
         
