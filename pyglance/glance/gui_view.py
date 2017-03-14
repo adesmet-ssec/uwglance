@@ -27,6 +27,18 @@ The GUI's most complex responsibility is keeping the user from entering
 garbage data into the UI.
 """
 
+def add_filler_row(layout):
+    """
+    Add a stretchable dummy row to the bottom of a QGridLayout.
+
+    So long as no other rows are set stretchable, this will use
+    up all "extra" space, keeping the other rows compact.
+    """
+    row = layout.rowCount()
+    layout.addWidget(QtGui.QLabel(""), row, 0)
+    layout.setRowStretch(row, 1)
+
+
 class _DoubleOrNoneValidator (QtGui.QDoubleValidator) :
     """
     This validator accepts doubles like it's parent class or None.
@@ -378,6 +390,9 @@ class GlanceGUIView (QtGui.QWidget) :
         # add the lon/lat controls that are separated by file
         currentRow = self._add_lon_lat_controls(A_CONST, layoutToUse, currentRow)
         currentRow = self._add_lon_lat_controls(B_CONST, layoutToUse, currentRow)
+
+        add_filler_row(layoutToUse)
+        currentRow += 1
         
         return layoutToUse
     
@@ -393,6 +408,9 @@ class GlanceGUIView (QtGui.QWidget) :
         # add the filtering related controls
         currentRow = self._add_simple_filter_controls(A_CONST, layoutToUse, currentRow)
         currentRow = self._add_simple_filter_controls(B_CONST, layoutToUse, currentRow)
+
+        add_filler_row(layoutToUse)
+        currentRow += 1
         
         return layoutToUse
     
