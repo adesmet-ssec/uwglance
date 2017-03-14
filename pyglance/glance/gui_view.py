@@ -162,6 +162,10 @@ class GlanceGUIView (QtGui.QWidget) :
         # create the layout and set up some of the overall record keeping
         layoutToUse = QtGui.QGridLayout()
         currentRow = 0
+
+        # All relevant fields include column 2, so make it stretchable
+        # (and by implication, make the rest non-stretchable)
+        layoutToUse.setColumnStretch(2,1)
         
         # set up the file info for the A file
         currentRow = self._add_file_related_controls(A_CONST, layoutToUse, currentRow)
