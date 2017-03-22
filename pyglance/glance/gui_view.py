@@ -178,6 +178,9 @@ class GlanceGUIView (QtGui.QWidget) :
         # All relevant fields include column 2, so make it stretchable
         # (and by implication, make the rest non-stretchable)
         layoutToUse.setColumnStretch(2,1)
+        # Also column 3, mostly so "Display Plot" stretches as it's the
+        # most important button
+        layoutToUse.setColumnStretch(3,1)
         
         # set up the file info for the A file
         currentRow = self._add_file_related_controls(A_CONST, layoutToUse, currentRow)
