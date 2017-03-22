@@ -73,7 +73,17 @@ class GlanceGUIStats (object) :
         # get Data objects
         aDataObject = self.dataModel.getVariableData(A_CONST, aVarName)
         bDataObject = self.dataModel.getVariableData(B_CONST, bVarName)
+
+        if aDataObject is None and bDataObject is not None:
+            aDataObject, bDataObject = bDataObject, aDataObject
+
+        if aDataObject is not None and bDataObject is None:
+            return self.sendStatsInfoSingle(aVarName, aDataObject)
+
+        return self.sendStatsInfoPair(aVarName, bVarName, aDataObject, bDataObject)
+
         
+    def sendStatsInfoPair(self, aVarName, bVarName, aDataObject, bDataObject):
         # check the minimum validity of our data; this call can raise an IncompatableDataObjects exception
         dataobjects.DiffInfoObject.verifyDataCompatability(aDataObject, bDataObject, aVarName, bVarName)
         
@@ -97,6 +107,27 @@ class GlanceGUIStats (object) :
         # tell my listeners to show the stats data we've collected
         for listener in self.statsListeners :
                 listener.displayStatsData(aVarName, bVarName, renderedText)
+
+    def sendStatsInfoSingle(self, aVarName, aDataObject):
+        LOG.info ("Constructing statistics for one variable")
+
+        # do the statistical analysis and collect the data that will be needed to render it nicely
+        tempAnalysis = stats.StatisticalInspectionAnalysis.withDataObjects(aDataObject)
+        # TODO, these constants should be moved into the gui_constants
+        tempInfo = { 'variable_name': aVarName }
+        kwargs   = { 'runInfo':    tempInfo,
+                     'statGroups': tempAnalysis.dictionary_form() }
+
+        # use a mako template to render an html verion of the stats for display
+        templateLookup = TemplateLookup(directories=[resource_filename(__name__, ".")])
+        guiTemplate    = Template(resource_string(__name__, "guistatsreport.txt"), lookup=templateLookup)
+        renderedText = guiTemplate.render(**kwargs)
+
+        # tell my listeners to show the stats data we've collected
+        for listener in self.statsListeners :
+                listener.displayStatsData(aVarName, None, renderedText)
+
+
     
     def sendRawData (self, fileID) :
         """
