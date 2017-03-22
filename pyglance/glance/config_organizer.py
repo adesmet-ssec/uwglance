@@ -469,7 +469,7 @@ def set_up_command_line_options (parser) :
                       help="set optional configuration file")
     parser.add_option('--fields', type='string',
                       default='filename,variable',
-                      help="comma separted list of additional fields to add to info's output")
+                      help="comma separted list of additional fields to add to info's output. Values include filename, variable, <AttributeName> and stats(StatisticName)")
     
     # should pass/fail be tested?
     parser.add_option('-x', '--doPassFail', dest=DO_TEST_PASSFAIL_KEY,

@@ -1297,8 +1297,22 @@ glance inspectStats A.hdf
     """
     
     def info(*args):
-        """list information about a list of files
-        List available variables for comparison.
+        """List information about variables in files
+
+        --parsable prints one variable per line, with field of information
+                   seperated by tabs.
+        --fields   specify one or more fields to print for each variable:
+                    filename - The name of the file containing the variable
+                    variable - The name of the variable
+                    <AttributeName> - If the variable has the specified 
+                               attribute, it will be printed. ex: FillValue
+                    stats(<StatName>) - Any statistic from 
+                               "glance inspectstats"
+                               ex: stats(num_data_points)
+
+        Examples:
+         glance info hdffile
+         glance info hdffile --parsable --fields 'filename,variable,stats(min),FillValue'
         """
         return info_library_call(options, *args)
     
