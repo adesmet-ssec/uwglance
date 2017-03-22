@@ -1204,12 +1204,9 @@ def return_info_fields(file, input, var, fields):
     return result
 
 
-def info_impl(options, *args):
+def info_library_call(options, *args):
     """list information about a list of files
     List available variables for comparison.
-
-    (Moved out of "info" inside of main as it has gotten
-    decidedly non-trivial. This "impl"ements that function.)
     """
     problems = 0
 
@@ -1303,7 +1300,7 @@ glance inspectStats A.hdf
         """list information about a list of files
         List available variables for comparison.
         """
-        return info_impl(options, *args)
+        return info_library_call(options, *args)
     
     def stats(*args):
         """create statistics summary of variables
