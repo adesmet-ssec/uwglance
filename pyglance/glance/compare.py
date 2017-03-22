@@ -1135,6 +1135,13 @@ def inspect_stats_library_call (afn, var_list=[ ], options_set={ }, do_document=
         print >> output_channel, ('\n\n' + statistics.INSP_STATISTICS_DOC_STR)
 
 def gather_stats_for_variable(filehandle, variable):
+    """ Generate statistics for a variable, flatting into a single level dictionary
+
+    Generate statistics for the variable variable in the file filehandle.  
+    statistics.StatisticalInspectionAnalysis.withSimpleData normally returns a
+    complex, nested data structure; this method flattens it out to a simple
+    dictionary.
+    """
     missing_val = filehandle.missing_value(variable)
     stats = statistics.StatisticalInspectionAnalysis.withSimpleData(filehandle[variable], missing_val)
     results = {}
@@ -1198,6 +1205,12 @@ def return_info_fields(file, input, var, fields):
 
 
 def info_impl(options, *args):
+    """list information about a list of files
+    List available variables for comparison.
+
+    (Moved out of "info" inside of main as it has gotten
+    decidedly non-trivial. This "impl"ements that function.)
+    """
     problems = 0
 
     fields = options.fields.split(',')
