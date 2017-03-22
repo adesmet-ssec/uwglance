@@ -1304,6 +1304,7 @@ glance inspectStats A.hdf
         --fields   specify one or more fields to print for each variable:
                     filename - The name of the file containing the variable
                     variable - The name of the variable
+                    shape -    The shape of the data
                     <AttributeName> - If the variable has the specified 
                                attribute, it will be printed. ex: FillValue
                     stats(<StatName>) - Any statistic from 
