@@ -60,8 +60,8 @@ class GlanceGUIStats (object) :
     
     def sendStatsInfo (self) :
         """
-        our data listeners should be sent statistics information for a comparison
-        of the currently selected variables (if possible)
+        our data listeners should be sent statistics information 
+        for the currently selected variable or variables (if possible)
         
         may raise an IncompatableDataObjects exception if it is impossible to compare the given data
         """
@@ -84,6 +84,12 @@ class GlanceGUIStats (object) :
 
         
     def sendStatsInfoPair(self, aVarName, bVarName, aDataObject, bDataObject):
+        """
+        send data listeners statistics information 
+        for the currently selected variables
+        
+        may raise an IncompatableDataObjects exception if it is impossible to compare the given data
+        """
         # check the minimum validity of our data; this call can raise an IncompatableDataObjects exception
         dataobjects.DiffInfoObject.verifyDataCompatability(aDataObject, bDataObject, aVarName, bVarName)
         
@@ -109,6 +115,10 @@ class GlanceGUIStats (object) :
                 listener.displayStatsData(aVarName, bVarName, renderedText)
 
     def sendStatsInfoSingle(self, aVarName, aDataObject):
+        """
+        send data listeners statistics information 
+        for the currently selected variable
+        """
         LOG.info ("Constructing statistics for one variable")
 
         # do the statistical analysis and collect the data that will be needed to render it nicely
