@@ -175,7 +175,13 @@ class DataObject (object) :
             return self
         copy = self.copy()
         copy.data = np.array([self.data.item()])
-        copy.self_analysis()
+
+        ignore_mask = None
+        if copy.masks.ignore_mask is not None:
+            ignore_mask = np.array([copy.masks.ignore_mask.item()])
+        copy.masks      = BasicMaskSetObject(ignore_mask)
+
+        copy.self_analysis(re_do_analysis=True)
         return copy
     
     def self_analysis(self, re_do_analysis=False) :
